@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Circles</title>
+    <link rel="stylesheet" href="main.css">
+
+</head>
+
+<body>
+    <h1>Concentric Circles</h1>
+    <input type="text" name="circleCount" id="circleCount">
+    <button onclick="create()">Create</button>
+    <div class="main-container"></div>
+
+    <script>
+        function create() {
+            let count = document.getElementById("circleCount").value;
+            let target = document.getElementsByClassName("main-container");
+            console.log(target[0].childNodes);
+            while (target[0].childNodes.length>0) {
+                target[0].removeChild(target[0].lastChild);
+            }
+            // for (let k = 0; k < target[0].childNodes.length; k++) {
+            //     target[0].removeChild(target.lastChild);
+            // }
+            createConcentricCircles(count);
+        }
+        function createConcentricCircles(n) {
+            let elementType = 'div';
+            for (let i = n - 1; i >= 0; i--) {
+                let divElement = document.createElement(elementType);
+                divElement.id = "div" + i;
+                divElement.className = "child";
+                // divElement.addEventListener("click", handleOnClick(i), false);
+                divElement.setAttribute('onclick', 'handleOnClick(' + i + ')');
+                if (i == n - 1) {
+                    let target = document.getElementsByClassName("main-container");
+                    console.log(target);
+                    target[0].appendChild(divElement);
+                } else {
+                    console.log("div" + (i + 1));
+                    let target = document.getElementById("div" + (i + 1));
+                    target.appendChild(divElement);
+                }
+            }
+        }
+
+        function handleOnClick(i) {
+            let targetDiv = document.getElementById("div" + i);
+            let divChildNodes = targetDiv.childNodes;
+            let textPresent = false;
+            let textKey = -1;
+            for (let k = 0; k < divChildNodes.length; k++) {
+                if (divChildNodes[k].nodeType == Node.TEXT_NODE && divChildNodes[k].data == i + "") {
+                    textPresent = true;
+                    textKey = k;
+                }
+            }
+            if (textPresent) {
+                targetDiv.removeChild(divChildNodes[textKey]);
+            } else {
+                let content = document.createTextNode(i);
+                targetDiv.appendChild(content);
+
+            }
+            event.stopPropagation();
+
+        }
+    </script>
+</body>
+
+</html>
