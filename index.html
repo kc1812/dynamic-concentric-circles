@@ -20,53 +20,44 @@
             let count = document.getElementById("circleCount").value;
             let target = document.getElementsByClassName("main-container");
             console.log(target[0].childNodes);
-            while (target[0].childNodes.length>0) {
+            while (target[0].childNodes.length > 0) {
                 target[0].removeChild(target[0].lastChild);
             }
-            // for (let k = 0; k < target[0].childNodes.length; k++) {
-            //     target[0].removeChild(target.lastChild);
-            // }
-            createConcentricCircles(count);
+            target[0].appendChild(createConcentricCircles(count));
         }
         function createConcentricCircles(n) {
-            let elementType = 'div';
-            for (let i = n - 1; i >= 0; i--) {
-                let divElement = document.createElement(elementType);
-                divElement.id = "div" + i;
-                divElement.className = "child";
-                // divElement.addEventListener("click", handleOnClick(i), false);
-                divElement.setAttribute('onclick', 'handleOnClick(' + i + ')');
-                if (i == n - 1) {
-                    let target = document.getElementsByClassName("main-container");
-                    console.log(target);
-                    target[0].appendChild(divElement);
-                } else {
-                    console.log("div" + (i + 1));
-                    let target = document.getElementById("div" + (i + 1));
-                    target.appendChild(divElement);
-                }
-            }
+            let divElement = document.createElement('div');
+            divElement.className = "child";
+            const eventFunction = handleOnClick(divElement, n)
+            divElement.addEventListener("click", eventFunction, false);;
+
+            if (n == 1)
+                return divElement;
+            divElement.appendChild(createConcentricCircles(n - 1));
+            return divElement;
         }
 
-        function handleOnClick(i) {
-            let targetDiv = document.getElementById("div" + i);
-            let divChildNodes = targetDiv.childNodes;
-            let textPresent = false;
-            let textKey = -1;
-            for (let k = 0; k < divChildNodes.length; k++) {
-                if (divChildNodes[k].nodeType == Node.TEXT_NODE && divChildNodes[k].data == i + "") {
-                    textPresent = true;
-                    textKey = k;
+        function handleOnClick(targetDiv, i) {
+            return function addKeyToDiv() {
+                let divChildNodes = targetDiv.childNodes;
+                let textPresent = false;
+                let textKey = -1;
+                for (let k = 0; k < divChildNodes.length; k++) {
+                    if (divChildNodes[k].nodeType == Node.TEXT_NODE && divChildNodes[k].data == i + "") {
+                        textPresent = true;
+                        textKey = k;
+                    }
                 }
-            }
-            if (textPresent) {
-                targetDiv.removeChild(divChildNodes[textKey]);
-            } else {
-                let content = document.createTextNode(i);
-                targetDiv.appendChild(content);
+                if (textPresent) {
+                    targetDiv.removeChild(divChildNodes[textKey]);
+                } else {
+                    let content = document.createTextNode(i);
+                    targetDiv.appendChild(content);
 
+                }
+                event.stopPropagation();
             }
-            event.stopPropagation();
+
 
         }
     </script>
